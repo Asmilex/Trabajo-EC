@@ -1,28 +1,166 @@
 ---
-title: "Your Vignette Title"
+title: "Exploración visual y ajuste de un modelo predictivo con corrplot y visreg"
 date: "`r format(Sys.time(), '%d de %B de %Y')`"
 author:
-    - Ana Buendía Ruiz-Azuaga
-    - Andrés Millán Muñoz
-    - Paula Villanueva Núñez
-    - Lucas Fehlau Arbulu
+    - "Ana Buendía Ruiz-Azuaga"
+    - "Andrés Millán Muñoz"
+    - "Paula Villanueva Núñez"
+    - "Lucas Fehlau Arbulu"
 
 output: rmarkdown::html_vignette
 
 vignette: >
     %\VignetteEngine{knitr::rmarkdown}
-    %\VignetteIndexEntry{Your Vignette Title}
+    %\VignetteIndexEntry{Exploración visual y ajuste de un modelo predictivo con corrplot y visreg}
     %\VignetteEncoding{UTF-8}
 ---
 
 ```{r purl=FALSE, echo=FALSE, results=FALSE, message=FALSE, fig.show='hide', warning=FALSE, eval=FALSE}
+
+knitr::opts_knit$set(
+    aliases   = c(h = 'fig.height', w = 'fig.width'),
+    fig.aling = 'center',
+    out.width = '800px'
+)
+
 rmarkdown::render("./movidas_guapardas.rmd", "html_vignette")
 ```
 
-# Sección guapa
+En este trabajo estudiaremos de forma visual el conjunto de datos `Seatbelts`, el cual recoge la información los accidentes de tráfico mortales en Gran Bretaña comprendidos entre los años 1969 y 1984. La ley relacionada con la obligatoriedad de los cinturones se introdujo el 31 de enero de 1983. Las variables de este conjunto de datos son:
 
-a
+https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/UKDriverDeaths.html
 
-## Subsussessión
+- **DriversKilled**: el número de conductores fallecidos.
+- **drivers**: conductores en un cierto año.
+- **front**: número de copilotos fallecidos o gravemente heridos.
+- **rear**: número de pasajeros en los asientos traseros fallecidos o gravemente heridos.
+- **kms**: distancia recorrida.
+- **PetrolPrice**: precio del petróleo.
+- **VanKilled**: número de conductores de furgonetas fallecidos.
+- **law**: si estaba en efecto la ley de tránsito en ese mes.
 
-aa
+Comprobaremos las correlaciones entre sus variables y construiremos un modelo predictivo, observando gráficamente la efectividad de este.
+
+# Análisis de correlaciones (corrplot)
+
+## Introducción
+
+El análisis de correlaciones puede llevarse a cabo de forma teórica o visual. Nos vamos a centrar en realizar este análisis de forma visual usando herramientas de análisis visual exlporatorio a partir de la matriz de correlaciones. De esta forma, podemos ver de forma intuitiva las diferentes correlaciones, ayudándonos así a detectar patrones escondidos en los datos.
+
+Para ello, primero necesitamos instalar los paquetes necesarios para el análisis de las correlaciones. El paquete `corrplot` puede instalarse de la siguiente manera:
+
+```{r}
+# install.packages("corrplot")
+library(corrplot)
+```
+
+Usaremos el dataframe `Seatbelts` para el análisis, y por simplicidad solo trabajaremos con los datos completos del mismo:
+
+```{r}
+SB <- data.frame(na.omit(Seatbelts))
+summary(SB)
+```
+
+La función `cor()`, incluida por defecto en R, calcula la matriz de correlaciones utilizando el coeficiente de correlación de Pearson.
+
+```{r}
+corSB <- cor(SB)
+corSB
+```
+
+Esta matriz se entiende mejor si utilizamos el gráfico correcto. Aquí es donde entra en juego el paquete `corrplot`. Por defecto, su salida es la siguiente:
+
+```{r, w=7, h=7}
+corrplot(corSB)
+```
+
+Muestra las correlaciones entre cada una de las variables de dos formas simultáneamente:
+
+- Mediante el tamaño de los puntos. A mayor tamaño del círculo, mayor valor absoluto de correlación.
+- Mediante el color de los puntos. Los puntos toman un color según la correlación que tengan las variables, indicando el rojo que estas están negativamente correlacionadas y el azul que lo están positivamente.
+
+Podemos visualizar la misma matriz de correlaciones mostrando los números en lugar de los círculos anteriores (por defecto la opción es `method='circle'`).
+
+```{r, w = 7, h = 7}
+corrplot(corSB, method='number')
+```
+
+También puede mostrarse con cuadrados, de forma más similar a un heatmap:
+
+```{r, w = 7, h = 7}
+corrplot(corSB, method='color')
+```
+
+Otras opciones para el valor de `method` son `square`, `ellipse`, `shade` o `pie`.
+
+## Cambiando el orden de las variables
+
+También podemos cambiar el orden de las variables en la representación como se muestra:
+
+```{r, w = 7, h = 7}
+corrplot(corSB, method='shade', order='AOE')
+```
+
+```{r, w = 7, h = 7}
+corrplot(corSB, method='ellipse', order='alphabet')
+```
+
+```{r, w = 7, h = 7}
+corrplot(corSB, method='pie', order='FPC')
+```
+
+
+
+
+Podemos observar cómo
+
+```{r, h = 7, w = 7}
+corrplot(corSB, order = 'hclust', addrect = 2)
+```
+
+# Visualización de un modelo de regresión (visreg)
+
+En esta sección realizaremos la construcción de un modelo de regresión y, usando el paquete `visreg`, podremos visualizar el ajuste de dicho modelo. Esto es, este paquete permite resolver el problema de saber cuánta relación existe entre algunas variables de un conjunto de datos.
+
+Para ello, primero necesitamos instalar y cargar dicho paquete con las siguientes órdenes:
+
+```{r}
+install.packages("visreg")
+library(visreg)
+```
+
+Podemos ajustar un modelo lineal que permita describir el número de conductores fallecidos en función del número de conductores en un cierto año con la función `lm`:
+
+```{r}
+fit <- lm(DriversKilled ~ drivers, data = SB)
+```
+
+Con la función `visreg()` podemos visualizar el modelo anterior:
+
+```{r, w = 7, h = 8}
+visreg(fit)
+```
+
+En el gráfico anterior podemos observar la relación estimada del modelo descrito anteriormente, una banda de confianza sobre esa estimación y los residuos.
+
+También podemos hacer visualizaciones con varias variables explicativas, como por ejemplo podemos visualizar el modelo que describe el número de conductores fallecidos en función del número de conductores en un cierto año y la distancia recorrida:
+
+```{r, w = 7, h = 7}
+fit <- lm(DriversKilled ~ drivers + kms, data = SB)
+visreg(fit, xvar = "kms")
+```
+
+Y además podemos dividirlo según los valores de un factor:
+
+```{r}
+fit <- lm(DriversKilled ~ drivers + kms + law, data = SB)
+visreg(fit, xvar = "kms", by = "law")
+```
+
+En realidad, puede ser cualquier variable. Si es continua, se puede indicar cómo se dividen por el argumento `breaks`
+
+En modelos más complicados se pueden hacer gráficas de contour:
+
+```{r, w = 7, h = 7}
+# visreg2d(fit, "","")
+```
