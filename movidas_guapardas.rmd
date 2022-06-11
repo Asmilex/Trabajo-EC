@@ -74,10 +74,10 @@ Esta matriz se entiende mejor si utilizamos el gráfico correcto. Aquí es donde
 corrplot(corSB)
 ```
 
-Muestra las correlaciones entre cada una de las variables de dos formas simultáneamente:
+Este gráfico muestra las correlaciones entre cada una de las variables de dos formas simultáneamente:
 
-- Mediante el tamaño de los puntos. A mayor tamaño del círculo, mayor valor absoluto de correlación.
-- Mediante el color de los puntos. Los puntos toman un color según la correlación que tengan las variables, indicando el rojo que estas están negativamente correlacionadas y el azul que lo están positivamente.
+- **Mediante el tamaño de los puntos**: a mayor tamaño del círculo, mayor valor absoluto de correlación.
+- **Mediante el color de los puntos**: los puntos toman un color según la correlación que tengan las variables, indicando el rojo que estas están negativamente correlacionadas y el azul que lo están positivamente.
 
 Podemos visualizar la misma matriz de correlaciones mostrando los números en lugar de los círculos anteriores (por defecto la opción es `method='circle'`).
 
@@ -91,11 +91,16 @@ También puede mostrarse con cuadrados, de forma más similar a un heatmap:
 corrplot(corSB, method='color')
 ```
 
-Otras opciones para el valor de `method` son `square`, `ellipse`, `shade` o `pie`.
+Otras opciones para el valor de `method` son `square`, `ellipse`, `shade` o `pie`, los cuales podremos visualizar en la sección siguiente.
 
 ## Cambiando el orden de las variables
 
-También podemos cambiar el orden de las variables en la representación como se muestra:
+También podemos cambiar el orden de las variables en la representación con las siguientes opciones:
+
+- `AOE`. Ordena por el orden angular de los vectores propios.
+- `FPC`. Ordena segúnorden de factor principal.
+- `hclust`. Ordena en orden jerárquico de cluster.
+- `alphabet`. Ordena las variables en orden alfabético.
 
 ```{r, w = 7, h = 7}
 corrplot(corSB, method='shade', order='AOE')
@@ -109,8 +114,37 @@ corrplot(corSB, method='ellipse', order='alphabet')
 corrplot(corSB, method='pie', order='FPC')
 ```
 
+```{r, w = 7, h = 7}
+corrplot(corSB, method='color', order='hclust')
+```
 
+## Diagonales y matrices triangulares
 
+La diagonal principal de la matriz de correlaciones expresa la correlación de una variable consigo misma, que siempre vale 1, y por tanto no aporta ninguna información relevante. Podemos desactivar la representación de esta diagonal como sigue:
+
+```{r, w = 7, h = 7}
+corrplot(corSB, method = 'square', order = 'alphabet', diag = FALSE)
+```
+
+Además, tenemos que la matriz de correlación es simétrica. Por ello podemos mostrar solo la matriz triangular superior o inferior.
+
+```{r, w = 7, h = 7}
+corrplot(corSB, method = 'square', order = 'FPC', type = 'lower', diag = FALSE)
+```
+
+```{r, w = 7, h = 7}
+corrplot(corSB, method = 'ellipse', order = 'AOE', type = 'upper')
+```
+
+Para mostrar más información en una sola gráfica, podemos usar la función `corrplot.mixed`, que representa la mitad superior de la matriz de correlaciones de una forma (por defecto con círculos) y la inferior de otra (por defecto con números).
+
+```{r, w=7, h =7}
+corrplot.mixed(corSB, order = 'AOE')
+```
+
+```{r, w=7, h=7}
+corrplot.mixed(corSB, lower = 'shade', upper = 'pie', order = 'hclust')
+```
 
 Podemos observar cómo
 
@@ -125,7 +159,7 @@ En esta sección realizaremos la construcción de un modelo de regresión y, usa
 Para ello, primero necesitamos instalar y cargar dicho paquete con las siguientes órdenes:
 
 ```{r}
-install.packages("visreg")
+# install.packages("visreg")
 library(visreg)
 ```
 
@@ -135,32 +169,44 @@ Podemos ajustar un modelo lineal que permita describir el número de conductores
 fit <- lm(DriversKilled ~ drivers, data = SB)
 ```
 
-Con la función `visreg()` podemos visualizar el modelo anterior:
+Con la función `visreg()` podemos visualizar el modelo:
 
-```{r, w = 7, h = 8}
+```{r, w = 7, h = 4}
 visreg(fit)
 ```
 
 En el gráfico anterior podemos observar la relación estimada del modelo descrito anteriormente, una banda de confianza sobre esa estimación y los residuos.
 
-También podemos hacer visualizaciones con varias variables explicativas, como por ejemplo podemos visualizar el modelo que describe el número de conductores fallecidos en función del número de conductores en un cierto año y la distancia recorrida:
+También podemos hacer diagramas con varias variables explicativas, como por ejemplo podemos visualizar el modelo que describe cuántos conductores han fallecido en función del número total de conductores en un cierto año y la distancia recorrida:
 
-```{r, w = 7, h = 7}
+```{r, w = 7, h = 4}
 fit <- lm(DriversKilled ~ drivers + kms, data = SB)
 visreg(fit, xvar = "kms")
 ```
 
 Y además podemos dividirlo según los valores de un factor:
 
-```{r}
+```{r, w = 7, h = 4}
 fit <- lm(DriversKilled ~ drivers + kms + law, data = SB)
 visreg(fit, xvar = "kms", by = "law")
+visreg(fit, xvar = "drivers", by = "law")
 ```
 
-En realidad, puede ser cualquier variable. Si es continua, se puede indicar cómo se dividen por el argumento `breaks`
+En realidad, puede ser cualquier variable. Si es continua, se puede indicar cómo se dividen por el argumento `breaks`.
+
+Otra opción interesante es superponer los gráficos anteriores en una sola gráfica:
+
+```{r, w = 7, h = 7}
+visreg(fit, xvar = "drivers", by = "law", overlay = TRUE)
+```
+Donde aquí observamos el efecto de la variable law
 
 En modelos más complicados se pueden hacer gráficas de contour:
 
 ```{r, w = 7, h = 7}
-# visreg2d(fit, "","")
+fit <- lm(DriversKilled ~ poly(kms, 2) * poly(drivers, 2) + law, data = SB)
+visreg2d(fit, "kms", "law")
+visreg2d(fit, "kms", "drivers", plot.type = "image")
+visreg2d(fit, "kms", "drivers", plot.type = "gg")
+visreg2d(fit, "kms", "law", plot.type = "persp")
 ```
