@@ -19,8 +19,8 @@ vignette: >
 
 knitr::opts_knit$set(
     aliases   = c(h = 'fig.height', w = 'fig.width'),
-    fig.aling = 'center',
-    out.width = '800px'
+    fig.align = 'center',
+    dpi = 200
 )
 
 rmarkdown::render("./movidas_guapardas.rmd", "html_vignette")
@@ -146,10 +146,45 @@ corrplot.mixed(corSB, order = 'AOE')
 corrplot.mixed(corSB, lower = 'shade', upper = 'pie', order = 'hclust')
 ```
 
-Podemos observar cómo
+## Agrupando por clustering
+
+Si estamos usando `hclust` como método de ordenación podemos añadir rectángulos en el gráfico de la matriz de correlación según el resultado del agrupamiento por clustering.
 
 ```{r, h = 7, w = 7}
 corrplot(corSB, order = 'hclust', addrect = 2)
+```
+
+```{r, h = 7, w = 7}
+corrplot(corSB, method = 'square', diag = FALSE, order = 'hclust', addrect = 3, rect.col = 'blue', rect.lwd = 3, tl.pos = 'd')
+```
+
+## Personalizando los colores
+
+
+
+## Visualizar una matriz distinta a la matriz de correlación
+
+
+
+## Mostrando niveles de significación e intervalos de confianza
+
+Nivel de confianza $\alpha = 0.95$:
+
+```{r, w = 7, h = 7}
+test = cor.mtest(corSB, conf.level = 0.95)
+corrplot(corSB, p.mat = test$p, sig.level = 0.10, order = 'hclust', addrect = 2)
+```
+
+Dejamos en blanco para los que no tengan significación, y añadimos los coeficientes para los que sí:
+
+```{r, w = 7, h = 7}
+corrplot(corSB, p.mat = test$p, method = 'circle', type = 'lower', insig = 'blank', addCoef.col ='black', number.cex = 0.8, order = 'AOE', diag=FALSE)
+```
+
+Se pueden visualizar los intervalos de confianza explícitamente de la siguiente manera:
+
+```{r, w = 7, h = 7}
+corrplot(corSB, lowCI = test$lowCI, uppCI = test$uppCI, order = 'hclust', tl.pos = 'd', rect.col = 'navy', plotC = 'rect', cl.pos = 'n')
 ```
 
 # Visualización de un modelo de regresión (visreg)
@@ -166,6 +201,7 @@ library(visreg)
 Podemos ajustar un modelo lineal que permita describir el número de conductores fallecidos en función del número de conductores en un cierto año con la función `lm`:
 
 ```{r}
+SB$law <- factor(SB$law)
 fit <- lm(DriversKilled ~ drivers, data = SB)
 ```
 
@@ -199,14 +235,12 @@ Otra opción interesante es superponer los gráficos anteriores en una sola grá
 ```{r, w = 7, h = 7}
 visreg(fit, xvar = "drivers", by = "law", overlay = TRUE)
 ```
-Donde aquí observamos el efecto de la variable law
 
 En modelos más complicados se pueden hacer gráficas de contour:
 
 ```{r, w = 7, h = 7}
 fit <- lm(DriversKilled ~ poly(kms, 2) * poly(drivers, 2) + law, data = SB)
-visreg2d(fit, "kms", "law")
-visreg2d(fit, "kms", "drivers", plot.type = "image")
+visreg2d(fit, "kms", "drivers")
 visreg2d(fit, "kms", "drivers", plot.type = "gg")
-visreg2d(fit, "kms", "law", plot.type = "persp")
+visreg2d(fit, "kms", "drivers", plot.type = "persp")
 ```
