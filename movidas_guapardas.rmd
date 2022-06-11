@@ -1,0 +1,28 @@
+---
+title: "Your Vignette Title"
+date: "`r format(Sys.time(), '%d de %B de %Y')`"
+author:
+    - Ana Buendía Ruiz-Azuaga
+    - Andrés Millán Muñoz
+    - Paula Villanueva Núñez
+    - Lucas Fehlau Arbulu
+
+output: rmarkdown::html_vignette
+
+vignette: >
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteIndexEntry{Your Vignette Title}
+    %\VignetteEncoding{UTF-8}
+---
+
+```{r purl=FALSE, echo=FALSE, results=FALSE, message=FALSE, fig.show='hide', warning=FALSE, eval=FALSE}
+rmarkdown::render("./movidas_guapardas.rmd", "html_vignette")
+```
+
+# Sección guapa
+
+a
+
+## Subsussessión
+
+aa
