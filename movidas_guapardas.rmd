@@ -220,15 +220,34 @@ fit <- lm(DriversKilled ~ drivers + kms, data = SB)
 visreg(fit, xvar = "kms")
 ```
 
+En particular, observamos que:
+
+```{r}
+fit <- lm(DriversKilled ~ kms + VanKilled, data = SB)
+visreg(fit, xvar = "VanKilled")
+summary(fit)
+```
+
+Pero ajustando por número de conductores:
+```{r}
+fit <- lm(DriversKilled ~ drivers + kms + VanKilled, data = SB)
+visreg(fit, xvar = "VanKilled")
+summary(fit)
+```
+
+Es decir, VanKilled puede ser un factor de confusión.
+
 Y además podemos dividirlo según los valores de un factor:
 
 ```{r, w = 7, h = 4}
-fit <- lm(DriversKilled ~ drivers + kms + law, data = SB)
-visreg(fit, xvar = "kms", by = "law")
+fit <- lm(DriversKilled ~ drivers + kms + law + VanKilled, data = SB)
 visreg(fit, xvar = "drivers", by = "law")
 ```
 
 En realidad, puede ser cualquier variable. Si es continua, se puede indicar cómo se dividen por el argumento `breaks`.
+```{r}
+visreg(fit, xvar = "drivers", by = "kms", breaks = 4)
+```
 
 Otra opción interesante es superponer los gráficos anteriores en una sola gráfica:
 
@@ -243,4 +262,5 @@ fit <- lm(DriversKilled ~ poly(kms, 2) * poly(drivers, 2) + law, data = SB)
 visreg2d(fit, "kms", "drivers")
 visreg2d(fit, "kms", "drivers", plot.type = "gg")
 visreg2d(fit, "kms", "drivers", plot.type = "persp")
+# TODO: persp queda un poco extraño
 ```
