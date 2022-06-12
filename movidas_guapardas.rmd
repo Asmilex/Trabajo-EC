@@ -215,7 +215,7 @@ library(visreg)
 Podemos ajustar un modelo lineal que permita describir el número de conductores fallecidos en función del número de conductores en un cierto año con la función `lm`:
 
 ```{r}
-fit <- lm(DriversKilled ~ drivers, data = tsSB)
+fit <- lm(DriversKilled ~ drivers, data = SB)
 ```
 
 Con la función `visreg()` podemos visualizar el modelo:
@@ -229,51 +229,68 @@ En el gráfico anterior podemos observar la relación estimada del modelo descri
 También podemos hacer diagramas con varias variables explicativas, como por ejemplo podemos visualizar el modelo que describe cuántos conductores han fallecido en función del número total de conductores en un cierto año y la distancia recorrida:
 
 ```{r, w = 7, h = 4}
-fit <- lm(DriversKilled ~ drivers + kms, data = tsSB)
-visreg(fit, xvar = "drivers")
+fit1 <- lm(DriversKilled ~ drivers + kms, data = SB)
+visreg(fit1, xvar = "drivers")
 ```
 
 En particular, observamos que:
 
 ```{r}
-fit <- lm(DriversKilled ~ kms + VanKilled, data = tsSB)
-visreg(fit, xvar = "VanKilled")
+fitVan <- lm(DriversKilled ~ kms + VanKilled, data = SB)
+visreg(fitVAN, xvar = "VanKilled")
 ```
 
 Pero ajustando por número de conductores:
 ```{r}
-fit <- lm(DriversKilled ~ drivers + kms + VanKilled, data = tsSB)
-visreg(fit, xvar = "VanKilled")
+fitVan <- lm(DriversKilled ~ drivers + kms + VanKilled, data = SB)
+visreg(fitVan, xvar = "VanKilled")
 ```
 
 Y además podemos dividirlo según los valores de un factor:
 
 ```{r, w = 7, h = 4}
-fit <- lm(DriversKilled ~ drivers + kms + law + VanKilled, data = tsSB)
-visreg(fit, xvar = "drivers", by = "law")
+fitlaw <- lm(DriversKilled ~ drivers + kms + law, data = SB)
+visreg(fitlaw, xvar = "drivers", by = "law")
 ```
 
 En realidad, puede ser cualquier variable. Si es continua, se puede indicar cómo se dividen por el argumento `breaks`.
 ```{r}
-fit <- lm(DriversKilled ~ drivers + kms + law, data = tsSB)
-visreg(fit, xvar = "drivers", by = "kms", breaks = 4)
+visreg(fitlaw, xvar = "drivers", by = "kms", breaks = 4)
 ```
 
 Otra opción interesante es superponer los gráficos anteriores en una sola gráfica:
 
 ```{r, w = 7, h = 7}
+visreg(fitlaw, xvar = "drivers", by = "law", overlay = TRUE)
+```
+
+También funciona para ajustes no lineales:
+```{r}
+fit <- lm(DriversKilled ~ poly(kms, 2) * poly(drivers, 2) + law, data = SB)
 visreg(fit, xvar = "drivers", by = "law", overlay = TRUE)
 ```
+
+Dado un objeto `visreg`, podemos tomar un subconjunto de él, por ejemplo aquí
+
+```{r}
+# fit <- lm()
+# visr <- visreg()
+# subset(visual, )
+```
+
+<!--
+REVIEW - qué es un contraste realmente no sé, si eso lo volvemos a meter
+
 
 También se pueden hacer contrastes:
 ```{r}
 visreg(fit, xvar = "law", type = "contrast")
 ```
+-->
 
 En modelos más complicados se pueden hacer gráficas de contour:
 
 ```{r, w = 7, h = 7}
-fit <- lm(DriversKilled ~ poly(kms, 2) * poly(drivers, 2) + law, data = tsSB)
 visreg2d(fit, "kms", "drivers")
 visreg2d(fit, "kms", "drivers", plot.type = "gg")
 visreg2d(fit, "kms", "drivers", plot.type = "persp")
