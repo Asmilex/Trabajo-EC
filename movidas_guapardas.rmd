@@ -18,8 +18,8 @@ vignette: >
 ```{r purl=FALSE, echo=FALSE, results=FALSE, message=FALSE, fig.show='hide', warning=FALSE, eval=FALSE}
 
 knitr::opts_knit$set(
-    aliases   = c(h = 'fig.height', w = 'fig.width'),
-    fig.align = 'center',
+    aliases = c(h = "fig.height", w = "fig.width"),
+    fig.align = "center",
     dpi = 200
 )
 
@@ -56,8 +56,10 @@ library(corrplot)
 
 Usaremos el dataframe `Seatbelts` para el análisis, y por simplicidad solo trabajaremos con los datos completos del mismo:
 
+<!-- NOTE - SeatBelts no tiene NAs -->
+<!-- REVIEW - El cambio a serie temporal no rompe nada, no? -->
 ```{r}
-SB <- data.frame(na.omit(Seatbelts))
+SB <- ts(Seatbelts, start = 1969, frequency = 12)
 summary(SB)
 ```
 
@@ -82,13 +84,13 @@ Este gráfico muestra las correlaciones entre cada una de las variables de dos f
 Podemos visualizar la misma matriz de correlaciones mostrando los números en lugar de los círculos anteriores (por defecto la opción es `method='circle'`).
 
 ```{r, w = 7, h = 7}
-corrplot(corSB, method='number')
+corrplot(corSB, method = "number")
 ```
 
 También puede mostrarse con cuadrados, de forma más similar a un heatmap:
 
 ```{r, w = 7, h = 7}
-corrplot(corSB, method='color')
+corrplot(corSB, method = "color")
 ```
 
 Otras opciones para el valor de `method` son `square`, `ellipse`, `shade` o `pie`, los cuales podremos visualizar en la sección siguiente.
@@ -103,19 +105,19 @@ También podemos cambiar el orden de las variables en la representación con las
 - `alphabet`. Ordena las variables en orden alfabético.
 
 ```{r, w = 7, h = 7}
-corrplot(corSB, method='shade', order='AOE')
+corrplot(corSB, method = "shade", order = "AOE")
 ```
 
 ```{r, w = 7, h = 7}
-corrplot(corSB, method='ellipse', order='alphabet')
+corrplot(corSB, method = "ellipse", order = "alphabet")
 ```
 
 ```{r, w = 7, h = 7}
-corrplot(corSB, method='pie', order='FPC')
+corrplot(corSB, method = "pie", order = "FPC")
 ```
 
 ```{r, w = 7, h = 7}
-corrplot(corSB, method='color', order='hclust')
+corrplot(corSB, method = "color", order = "hclust")
 ```
 
 ## Diagonales y matrices triangulares
@@ -123,27 +125,27 @@ corrplot(corSB, method='color', order='hclust')
 La diagonal principal de la matriz de correlaciones expresa la correlación de una variable consigo misma, que siempre vale 1, y por tanto no aporta ninguna información relevante. Podemos desactivar la representación de esta diagonal como sigue:
 
 ```{r, w = 7, h = 7}
-corrplot(corSB, method = 'square', order = 'alphabet', diag = FALSE)
+corrplot(corSB, method = "square", order = "alphabet", diag = FALSE)
 ```
 
 Además, tenemos que la matriz de correlación es simétrica. Por ello podemos mostrar solo la matriz triangular superior o inferior.
 
 ```{r, w = 7, h = 7}
-corrplot(corSB, method = 'square', order = 'FPC', type = 'lower', diag = FALSE)
+corrplot(corSB, method = "square", order = "FPC", type = "lower", diag = FALSE)
 ```
 
 ```{r, w = 7, h = 7}
-corrplot(corSB, method = 'ellipse', order = 'AOE', type = 'upper')
+corrplot(corSB, method = "ellipse", order = "AOE", type = "upper")
 ```
 
 Para mostrar más información en una sola gráfica, podemos usar la función `corrplot.mixed`, que representa la mitad superior de la matriz de correlaciones de una forma (por defecto con círculos) y la inferior de otra (por defecto con números).
 
 ```{r, w=7, h =7}
-corrplot.mixed(corSB, order = 'AOE')
+corrplot.mixed(corSB, order = "AOE")
 ```
 
 ```{r, w=7, h=7}
-corrplot.mixed(corSB, lower = 'shade', upper = 'pie', order = 'hclust')
+corrplot.mixed(corSB, lower = "shade", upper = "pie", order = "hclust")
 ```
 
 ## Agrupando por clustering
@@ -151,11 +153,11 @@ corrplot.mixed(corSB, lower = 'shade', upper = 'pie', order = 'hclust')
 Si estamos usando `hclust` como método de ordenación podemos añadir rectángulos en el gráfico de la matriz de correlación según el resultado del agrupamiento por clustering.
 
 ```{r, h = 7, w = 7}
-corrplot(corSB, order = 'hclust', addrect = 2)
+corrplot(corSB, order = "hclust", addrect = 2)
 ```
 
 ```{r, h = 7, w = 7}
-corrplot(corSB, method = 'square', diag = FALSE, order = 'hclust', addrect = 3, rect.col = 'blue', rect.lwd = 3, tl.pos = 'd')
+corrplot(corSB, method = "square", diag = FALSE, order = "hclust", addrect = 3, rect.col = "blue", rect.lwd = 3, tl.pos = "d")
 ```
 
 ## Personalizando los colores
@@ -171,20 +173,20 @@ corrplot(corSB, method = 'square', diag = FALSE, order = 'hclust', addrect = 3, 
 Nivel de confianza $\alpha = 0.95$:
 
 ```{r, w = 7, h = 7}
-test = cor.mtest(corSB, conf.level = 0.95)
-corrplot(corSB, p.mat = test$p, sig.level = 0.10, order = 'hclust', addrect = 2)
+test <- cor.mtest(corSB, conf.level = 0.95)
+corrplot(corSB, p.mat = test$p, sig.level = 0.10, order = "hclust", addrect = 2)
 ```
 
 Dejamos en blanco para los que no tengan significación, y añadimos los coeficientes para los que sí:
 
 ```{r, w = 7, h = 7}
-corrplot(corSB, p.mat = test$p, method = 'circle', type = 'lower', insig = 'blank', addCoef.col ='black', number.cex = 0.8, order = 'AOE', diag=FALSE)
+corrplot(corSB, p.mat = test$p, method = "circle", type = "lower", insig = "blank", addCoef.col = "black", number.cex = 0.8, order = "AOE", diag = FALSE)
 ```
 
 Se pueden visualizar los intervalos de confianza explícitamente de la siguiente manera:
 
 ```{r, w = 7, h = 7}
-corrplot(corSB, lowCI = test$lowCI, uppCI = test$uppCI, order = 'hclust', tl.pos = 'd', rect.col = 'navy', plotC = 'rect', cl.pos = 'n')
+corrplot(corSB, lowCI = test$lowCI, uppCI = test$uppCI, order = "hclust", tl.pos = "d", rect.col = "navy", plotC = "rect", cl.pos = "n")
 ```
 
 # Visualización de un modelo de regresión (visreg)
@@ -201,8 +203,7 @@ library(visreg)
 Podemos ajustar un modelo lineal que permita describir el número de conductores fallecidos en función del número de conductores en un cierto año con la función `lm`:
 
 ```{r}
-SB$law <- factor(SB$law)
-fit <- lm(DriversKilled ~ drivers, data = SB)
+fit <- lm(DriversKilled ~ drivers, data = tsSB)
 ```
 
 Con la función `visreg()` podemos visualizar el modelo:
@@ -216,36 +217,33 @@ En el gráfico anterior podemos observar la relación estimada del modelo descri
 También podemos hacer diagramas con varias variables explicativas, como por ejemplo podemos visualizar el modelo que describe cuántos conductores han fallecido en función del número total de conductores en un cierto año y la distancia recorrida:
 
 ```{r, w = 7, h = 4}
-fit <- lm(DriversKilled ~ drivers + kms, data = SB)
-visreg(fit, xvar = "kms")
+fit <- lm(DriversKilled ~ drivers + kms, data = tsSB)
+visreg(fit, xvar = "drivers")
 ```
 
 En particular, observamos que:
 
 ```{r}
-fit <- lm(DriversKilled ~ kms + VanKilled, data = SB)
+fit <- lm(DriversKilled ~ kms + VanKilled, data = tsSB)
 visreg(fit, xvar = "VanKilled")
-summary(fit)
 ```
 
 Pero ajustando por número de conductores:
 ```{r}
-fit <- lm(DriversKilled ~ drivers + kms + VanKilled, data = SB)
+fit <- lm(DriversKilled ~ drivers + kms + VanKilled, data = tsSB)
 visreg(fit, xvar = "VanKilled")
-summary(fit)
 ```
-
-Es decir, VanKilled puede ser un factor de confusión.
 
 Y además podemos dividirlo según los valores de un factor:
 
 ```{r, w = 7, h = 4}
-fit <- lm(DriversKilled ~ drivers + kms + law + VanKilled, data = SB)
+fit <- lm(DriversKilled ~ drivers + kms + law + VanKilled, data = tsSB)
 visreg(fit, xvar = "drivers", by = "law")
 ```
 
 En realidad, puede ser cualquier variable. Si es continua, se puede indicar cómo se dividen por el argumento `breaks`.
 ```{r}
+fit <- lm(DriversKilled ~ drivers + kms + law, data = tsSB)
 visreg(fit, xvar = "drivers", by = "kms", breaks = 4)
 ```
 
@@ -255,10 +253,15 @@ Otra opción interesante es superponer los gráficos anteriores en una sola grá
 visreg(fit, xvar = "drivers", by = "law", overlay = TRUE)
 ```
 
+También se pueden hacer contrastes:
+```{r}
+visreg(fit, xvar = "law", type = "contrast")
+```
+
 En modelos más complicados se pueden hacer gráficas de contour:
 
 ```{r, w = 7, h = 7}
-fit <- lm(DriversKilled ~ poly(kms, 2) * poly(drivers, 2) + law, data = SB)
+fit <- lm(DriversKilled ~ poly(kms, 2) * poly(drivers, 2) + law, data = tsSB)
 visreg2d(fit, "kms", "drivers")
 visreg2d(fit, "kms", "drivers", plot.type = "gg")
 visreg2d(fit, "kms", "drivers", plot.type = "persp")
