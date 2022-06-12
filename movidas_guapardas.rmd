@@ -245,7 +245,7 @@ En particular, observamos que:
 
 ```{r}
 fitVan <- lm(DriversKilled ~ kms + VanKilled, data = SB)
-visreg(fitVAN, xvar = "VanKilled")
+visreg(fitVan, xvar = "VanKilled")
 ```
 
 Pero ajustando por número de conductores:
