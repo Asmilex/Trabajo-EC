@@ -45,7 +45,7 @@ Comprobaremos las correlaciones entre sus variables y construiremos un modelo pr
 
 ## Introducción
 
-El análisis de correlaciones puede llevarse a cabo de forma teórica o visual. Nos vamos a centrar en realizar este análisis de forma visual usando herramientas de análisis visual exlporatorio a partir de la matriz de correlaciones. De esta forma, podemos ver de forma intuitiva las diferentes correlaciones, ayudándonos así a detectar patrones escondidos en los datos.
+El análisis de correlaciones puede llevarse a cabo de forma teórica o visual. Nos vamos a centrar en realizar este análisis de forma visual usando herramientas de análisis visual exploratorio a partir de la matriz de correlaciones. De esta forma, podemos ver de forma intuitiva las diferentes correlaciones, ayudándonos así a detectar patrones escondidos en los datos.
 
 Para ello, primero necesitamos instalar los paquetes necesarios para el análisis de las correlaciones. El paquete `corrplot` puede instalarse de la siguiente manera:
 
@@ -54,7 +54,7 @@ Para ello, primero necesitamos instalar los paquetes necesarios para el análisi
 library(corrplot)
 ```
 
-Usaremos el dataframe `Seatbelts` para el análisis, y por simplicidad solo trabajaremos con los datos completos del mismo:
+Usaremos el dataframe `Seatbelts` para el análisis y, por simplicidad, solo trabajaremos con los datos completos del mismo:
 
 <!-- NOTE - SeatBelts no tiene NAs -->
 <!-- REVIEW - El cambio a serie temporal no rompe nada, no? -->
@@ -162,7 +162,19 @@ corrplot(corSB, method = "square", diag = FALSE, order = "hclust", addrect = 3, 
 
 ## Personalizando los colores
 
+Podemos modificar los colores que se usan en las gráficas que vienen por defecto. Esto se puede hacer con el argumento `col`, al que le pasaremos los colores que queremos usar. Por ejemplo, podemos usar colores secuenciales, tales como `YlGn`, `OrRd`, `YlOrRd`, `YlOrBr`, `Blues`, `Reds`, `Greens`, `Purples`, etc; o colores divergentes, tales como `RdBu`, `BrBG`, `PiYG`, `PRGn`, `PuOr` o `RdYlBu`. Para los colores secuenciales necesitamos obtenerlos de la función `COL1`, mientras que los colores divergentes los conseguimos con `COL2`.
 
+En la siguiente ejecución se muestra el gráfico de las correlaciones entre las variables usando tonos morados:
+
+```{r, h = 7, w = 7}
+corrplot(corSB, col = COL1("Purples"))
+```
+
+Si queremos que el gráfico tenga colores entre el tono marrón y el tono verde, ejecutamos lo siguiente:
+
+```{r, h = 7, w = 7}
+corrplot(corSB, col = COL2("BrBG"))
+```
 
 ## Visualizar una matriz distinta a la matriz de correlación
 
@@ -203,7 +215,7 @@ library(visreg)
 Podemos ajustar un modelo lineal que permita describir el número de conductores fallecidos en función del número de conductores en un cierto año con la función `lm`:
 
 ```{r}
-fit <- lm(DriversKilled ~ drivers, data = SB)
+fit <- lm(DriversKilled ~ drivers, data = tsSB)
 ```
 
 Con la función `visreg()` podemos visualizar el modelo:
@@ -217,68 +229,51 @@ En el gráfico anterior podemos observar la relación estimada del modelo descri
 También podemos hacer diagramas con varias variables explicativas, como por ejemplo podemos visualizar el modelo que describe cuántos conductores han fallecido en función del número total de conductores en un cierto año y la distancia recorrida:
 
 ```{r, w = 7, h = 4}
-fit1 <- lm(DriversKilled ~ drivers + kms, data = SB)
-visreg(fit1, xvar = "drivers")
+fit <- lm(DriversKilled ~ drivers + kms, data = tsSB)
+visreg(fit, xvar = "drivers")
 ```
 
 En particular, observamos que:
 
 ```{r}
-fitVan <- lm(DriversKilled ~ kms + VanKilled, data = SB)
-visreg(fitVan, xvar = "VanKilled")
+fit <- lm(DriversKilled ~ kms + VanKilled, data = tsSB)
+visreg(fit, xvar = "VanKilled")
 ```
 
 Pero ajustando por número de conductores:
 ```{r}
-fitVan <- lm(DriversKilled ~ drivers + kms + VanKilled, data = SB)
-visreg(fitVan, xvar = "VanKilled")
+fit <- lm(DriversKilled ~ drivers + kms + VanKilled, data = tsSB)
+visreg(fit, xvar = "VanKilled")
 ```
 
 Y además podemos dividirlo según los valores de un factor:
 
 ```{r, w = 7, h = 4}
-fitlaw <- lm(DriversKilled ~ drivers + kms + law, data = SB)
-visreg(fitlaw, xvar = "drivers", by = "law")
+fit <- lm(DriversKilled ~ drivers + kms + law + VanKilled, data = tsSB)
+visreg(fit, xvar = "drivers", by = "law")
 ```
 
 En realidad, puede ser cualquier variable. Si es continua, se puede indicar cómo se dividen por el argumento `breaks`.
 ```{r}
-visreg(fitlaw, xvar = "drivers", by = "kms", breaks = 4)
+fit <- lm(DriversKilled ~ drivers + kms + law, data = tsSB)
+visreg(fit, xvar = "drivers", by = "kms", breaks = 4)
 ```
 
 Otra opción interesante es superponer los gráficos anteriores en una sola gráfica:
 
 ```{r, w = 7, h = 7}
-visreg(fitlaw, xvar = "drivers", by = "law", overlay = TRUE)
-```
-
-
-También funciona para ajustes no lineales:
-```{r}
-fit <- lm(DriversKilled ~ poly(kms, 2) * poly(drivers, 2) + law, data = SB)
 visreg(fit, xvar = "drivers", by = "law", overlay = TRUE)
 ```
-
-Dado un objeto `visreg`, podemos tomar un subconjunto de él, por ejemplo aquí
-
-```{r}
-# fit <- lm()
-# visr <- visreg()
-# subset(visual, )
-
-```
-<!--  
-REVIEW - qué es un contraste realmente no sé, si eso lo volvemos a meter
 
 También se pueden hacer contrastes:
 ```{r}
 visreg(fit, xvar = "law", type = "contrast")
 ```
--->
 
 En modelos más complicados se pueden hacer gráficas de contour:
 
 ```{r, w = 7, h = 7}
+fit <- lm(DriversKilled ~ poly(kms, 2) * poly(drivers, 2) + law, data = tsSB)
 visreg2d(fit, "kms", "drivers")
 visreg2d(fit, "kms", "drivers", plot.type = "gg")
 visreg2d(fit, "kms", "drivers", plot.type = "persp")
