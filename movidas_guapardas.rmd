@@ -249,7 +249,7 @@ visreg(fitlaw, xvar = "drivers", by = "kms", breaks = 4)
 Otra opción interesante es superponer los gráficos anteriores en una sola gráfica:
 
 ```{r, w = 7, h = 7}
-visreg(fit, xvar = "drivers", by = "law", overlay = TRUE)
+visreg(fitlaw, xvar = "drivers", by = "law", overlay = TRUE)
 ```
 
 
@@ -262,9 +262,9 @@ visreg(fit, xvar = "drivers", by = "law", overlay = TRUE)
 Dado un objeto `visreg`, podemos tomar un subconjunto de él, por ejemplo aquí
 
 ```{r}
-fit <- lm()
-visr <- visreg()
-subset(visual, )
+# fit <- lm()
+# visr <- visreg()
+# subset(visual, )
 
 ```
 <!--  
