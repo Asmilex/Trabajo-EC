@@ -274,33 +274,15 @@ visreg(fitlaw, xvar = "drivers", by = "law", overlay = TRUE)
 
 También funciona para ajustes no lineales:
 ```{r}
-fit <- lm(DriversKilled ~ poly(kms, 2) * poly(drivers, 2) + law, data = SB)
-visreg(fit, xvar = "drivers", by = "law", overlay = TRUE)
+fitpoly <- lm(DriversKilled ~ poly(kms, 2) * poly(drivers, 2) + law, data = SB)
+visreg(fitpoly, xvar = "drivers", by = "law", overlay = TRUE)
 ```
 
-Dado un objeto `visreg`, podemos tomar un subconjunto de él, por ejemplo aquí
-
-```{r}
-# fit <- lm()
-# visr <- visreg()
-# subset(visual, )
-```
-
-<!--
-REVIEW - qué es un contraste realmente no sé, si eso lo volvemos a meter
-
-
-También se pueden hacer contrastes:
-```{r}
-visreg(fit, xvar = "law", type = "contrast")
-```
--->
 
 En modelos más complicados se pueden hacer gráficas de contour:
 
 ```{r, w = 7, h = 7}
-visreg2d(fit, "kms", "drivers")
-visreg2d(fit, "kms", "drivers", plot.type = "gg")
-visreg2d(fit, "kms", "drivers", plot.type = "persp")
-# TODO: persp queda un poco extraño
+visreg2d(fitpoly, "kms", "drivers")
+visreg2d(fitpoly, "kms", "drivers", plot.type = "gg")
+visreg2d(fitpoly, "kms", "drivers", plot.type = "persp")
 ```
