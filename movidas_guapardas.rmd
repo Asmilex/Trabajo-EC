@@ -54,9 +54,8 @@ Para ello, primero necesitamos instalar los paquetes necesarios para el análisi
 library(corrplot)
 ```
 
-Usaremos el dataframe `Seatbelts` para el análisis y, por simplicidad, solo trabajaremos con los datos completos del mismo:
+Usaremos el dataframe `Seatbelts` para el análisis. Afortunadamente, no tiene datos incompletos.
 
-<!-- NOTE - SeatBelts no tiene NAs -->
 <!-- REVIEW - El cambio a serie temporal no rompe nada, no? -->
 ```{r}
 SB <- ts(Seatbelts, start = 1969, frequency = 12)
@@ -241,20 +240,20 @@ fit1 <- lm(DriversKilled ~ drivers + kms, data = SB)
 visreg(fit1, xvar = "drivers")
 ```
 
-En particular, observamos que:
+En particular, observamos cierta correlación:
 
 ```{r}
 fitVan <- lm(DriversKilled ~ kms + VanKilled, data = SB)
 visreg(fitVan, xvar = "VanKilled")
 ```
 
-Pero ajustando por número de conductores:
+Pero incluyendo en el modelo el número de conductores:
 ```{r}
 fitVan <- lm(DriversKilled ~ drivers + kms + VanKilled, data = SB)
 visreg(fitVan, xvar = "VanKilled")
 ```
 
-Y además podemos dividirlo según los valores de un factor:
+También podemos dividir las gráficas según los valores de un factor:
 
 ```{r, w = 7, h = 4}
 fitlaw <- lm(DriversKilled ~ drivers + kms + law, data = SB)
