@@ -176,9 +176,17 @@ Si queremos que el gráfico tenga colores entre el tono marrón y el tono verde,
 corrplot(corSB, col = COL2("BrBG"))
 ```
 
+También podemos cambiar el color del fondo con el argumento `bg`.
+
 ## Visualizar una matriz distinta a la matriz de correlación
 
+Podemos visualizar una matriz que no es de correlaciones estableciendo el argumento `is.corr` como `FALSE`:
 
+```{r, h = 7, w = 7}
+corrplot(corSB, is.corr = FALSE)
+```
+
+Observemos que los límites del rango de colores cambia.
 
 ## Mostrando niveles de significación e intervalos de confianza
 
