@@ -3,9 +3,9 @@ title: "Exploración visual y ajuste de un modelo predictivo con corrplot y visr
 date: "`r format(Sys.time(), '%d de %B de %Y')`"
 author:
     - "Ana Buendía Ruiz-Azuaga"
+    - "Lucas Fehlau Arbulu"
     - "Andrés Millán Muñoz"
     - "Paula Villanueva Núñez"
-    - "Lucas Fehlau Arbulu"
 
 output: rmarkdown::html_vignette
 
@@ -26,7 +26,9 @@ knitr::opts_knit$set(
 rmarkdown::render("./movidas_guapardas.rmd", "html_vignette")
 ```
 
-En este trabajo estudiaremos de forma visual el conjunto de datos `Seatbelts`, el cual recoge la información los accidentes de tráfico mortales en Gran Bretaña comprendidos entre los años 1969 y 1984. La ley relacionada con la obligatoriedad de los cinturones se introdujo el 31 de enero de 1983. Las variables de este conjunto de datos son:
+En este trabajo estudiaremos de forma visual el conjunto de datos `Seatbelts`, el cual recoge la información los accidentes de tráfico mortales en Gran Bretaña comprendidos entre los años 1969 y 1984. La ley relacionada con la obligatoriedad de los cinturones se introdujo el 31 de enero de 1983.
+
+Las variables de este conjunto de datos son:
 
 https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/UKDriverDeaths.html
 
@@ -45,7 +47,7 @@ Comprobaremos las correlaciones entre sus variables y construiremos un modelo pr
 
 ## Introducción
 
-El análisis de correlaciones puede llevarse a cabo de forma teórica o visual. Nos vamos a centrar en realizar este análisis de forma visual usando herramientas de análisis visual exploratorio a partir de la matriz de correlaciones. De esta forma, podemos ver de forma intuitiva las diferentes correlaciones, ayudándonos así a detectar patrones escondidos en los datos.
+El análisis de correlaciones puede llevarse a cabo de forma teórica o visual. Nosotros nos vamos a centrar en realizar este análisis de forma visual usando herramientas de análisis visual exploratorio a partir de la matriz de correlaciones. De esta forma, podemos ver de forma intuitiva las diferentes correlaciones, ayudándonos así a detectar patrones ocultos en los datos.
 
 Para ello, primero necesitamos instalar los paquetes necesarios para el análisis de las correlaciones. El paquete `corrplot` puede instalarse de la siguiente manera:
 
@@ -80,13 +82,13 @@ Este gráfico muestra las correlaciones entre cada una de las variables de dos f
 - **Mediante el tamaño de los puntos**: a mayor tamaño del círculo, mayor valor absoluto de correlación.
 - **Mediante el color de los puntos**: los puntos toman un color según la correlación que tengan las variables, indicando el rojo que estas están negativamente correlacionadas y el azul que lo están positivamente.
 
-Podemos visualizar la misma matriz de correlaciones mostrando los números en lugar de los círculos anteriores (por defecto la opción es `method='circle'`).
+Podemos visualizar la misma matriz de correlaciones mostrando los números en lugar de los círculos anteriores (la opción predeterminada es`method='circle'`).
 
 ```{r, w = 7, h = 7}
 corrplot(corSB, method = "number")
 ```
 
-También puede mostrarse con cuadrados, de forma más similar a un heatmap:
+También puede mostrarse con cuadrados, lo cual se asemeja a un *heatmap*:
 
 ```{r, w = 7, h = 7}
 corrplot(corSB, method = "color")
@@ -96,12 +98,12 @@ Otras opciones para el valor de `method` son `square`, `ellipse`, `shade` o `pie
 
 ## Cambiando el orden de las variables
 
-También podemos cambiar el orden de las variables en la representación con las siguientes opciones:
+Podemos cambiar el orden de las variables en la representación con las siguientes opciones:
 
-- `AOE`. Ordena por el orden angular de los vectores propios.
-- `FPC`. Ordena segúnorden de factor principal.
-- `hclust`. Ordena en orden jerárquico de cluster.
-- `alphabet`. Ordena las variables en orden alfabético.
+- `AOE`: sigue el orden angular de los vectores propios.
+- `FPC`: Ordena según la componente principal.
+- `hclust`: Ordena basándose en la jerarquía de clusters.
+- `alphabet`: Orden alfabético.
 
 ```{r, w = 7, h = 7}
 corrplot(corSB, method = "shade", order = "AOE")
