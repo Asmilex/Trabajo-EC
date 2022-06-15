@@ -23,7 +23,7 @@ knitr::opts_knit$set(
 )
 ```
 
-En este trabajo estudiaremos de forma visual el conjunto de datos `Seatbelts`, el cual recoge la información los accidentes de tráfico mortales en Gran Bretaña comprendidos entre los años 1969 y 1984. La ley relacionada con la obligatoriedad de los cinturones se introdujo el 31 de enero de 1983.
+En este trabajo estudiaremos de forma visual el conjunto de datos `Seatbelts`, el cual recoge información sobre los accidentes de tráfico mortales en Gran Bretaña comprendidos entre los años 1969 y 1984. Estos datos resultan relevantes ya que la ley relacionada con la obligatoriedad de los cinturones se introdujo el 31 de enero de 1983.
 
 Las variables de este conjunto de datos son:
 
@@ -46,7 +46,7 @@ Comprobaremos las correlaciones entre sus variables y construiremos un modelo pr
 
 El análisis de correlaciones puede llevarse a cabo de forma teórica o visual. Nosotros nos vamos a centrar en realizar este análisis de forma visual usando herramientas de análisis visual exploratorio a partir de la matriz de correlaciones. De esta forma, podemos ver de forma intuitiva las diferentes correlaciones, ayudándonos así a detectar patrones ocultos en los datos.
 
-Para ello, primero necesitamos instalar los paquetes necesarios para el análisis de las correlaciones. El paquete `corrplot` puede instalarse de la siguiente manera:
+Para ello, primero necesitamos instalar los paquetes necesarios para el análisis visual de las correlaciones. El paquete `corrplot` puede instalarse de la siguiente manera:
 
 ```{r, warning=FALSE}
 # install.packages("corrplot")
@@ -79,19 +79,19 @@ Este gráfico muestra las correlaciones entre cada una de las variables de dos f
 - **Mediante el tamaño de los puntos**: a mayor tamaño del círculo, mayor valor absoluto de correlación.
 - **Mediante el color de los puntos**: los puntos toman un color según la correlación que tengan las variables, indicando el rojo que estas están negativamente correlacionadas y el azul que lo están positivamente.
 
-Podemos visualizar la misma matriz de correlaciones mostrando los números en lugar de los círculos anteriores (la opción predeterminada es`method='circle'`).
+Podemos visualizar la misma matriz de correlaciones mostrando los números en lugar de los círculos anteriores (la opción predeterminada es `method='circle'`).
 
 ```{r, w = 7, h = 7}
 corrplot(corSB, method = "number")
 ```
 
-También puede mostrarse con cuadrados, lo cual se asemeja a un *heatmap*:
+También puede mostrarse con cuadrados en lugar de círculos, de forma que el gráfico se asemeja a un *heatmap*:
 
 ```{r, w = 7, h = 7}
 corrplot(corSB, method = "color")
 ```
 
-Otras opciones para el valor de `method` son `square`, `ellipse`, `shade` o `pie`, los cuales podremos visualizar en la sección siguiente.
+Otras opciones para el valor de `method` son `square`, `ellipse`, `shade` o `pie`, las cuáles podremos visualizar en la sección siguiente.
 
 ## Cambiando el orden de las variables
 
@@ -126,7 +126,7 @@ La diagonal principal de la matriz de correlaciones expresa la correlación de u
 corrplot(corSB, method = "square", order = "alphabet", diag = FALSE)
 ```
 
-Como la matriz de correlaciones es simétrica, podemos mostrar únicamente una o la triangular superior o la inferior.
+Como la matriz de correlaciones es simétrica, podemos mostrar únicamente la triangular superior o la inferior.
 
 ```{r, w = 7, h = 7}
 corrplot(corSB, method = "square", order = "FPC", type = "lower", diag = FALSE)
@@ -163,7 +163,7 @@ corrplot(
 
 ## Personalizando los colores
 
-Podemos modificar los colores que se usan en las gráficas que vienen por defecto. Esto se puede hacer con el argumento `col`, al que le pasaremos los colores que queremos usar. Por ejemplo, podemos usar colores secuenciales, tales como `YlGn`, `OrRd`, `YlOrRd`, `YlOrBr`, `Blues`, `Reds`, `Greens`, `Purples`, etc; o colores divergentes, tales como `RdBu`, `BrBG`, `PiYG`, `PRGn`, `PuOr` o `RdYlBu`. Los colores generados pueden ser obtenidos mediante las funciones `COL1` o `COL2`. El primero se encarga de interpolar entre los dos extremos, mientras que el segundo genera paletas divergentes.
+Podemos modificar los colores que se usan en las gráficas que vienen por defecto. Esto se puede hacer con el argumento `col`, al que le pasaremos los colores que queremos usar. Por ejemplo, podemos usar colores secuenciales, tales como `YlGn`, `OrRd`, `YlOrRd`, `YlOrBr`, `Blues`, `Reds`, `Greens`, `Purples`, etc; o colores divergentes, tales como `RdBu`, `BrBG`, `PiYG`, `PRGn`, `PuOr` o `RdYlBu`. Los colores generados pueden ser obtenidos mediante las funciones `COL1` o `COL2`, respectivamente. El primero se encarga de interpolar entre los dos extremos, mientras que el segundo genera paletas divergentes.
 
 En la siguiente ejecución se muestra el gráfico de las correlaciones entre las variables usando tonos morados:
 
@@ -190,7 +190,7 @@ corrplot(
 )
 ```
 
-Observemos que los límites del rango de colores cambia.
+Observemos que los límites del rango de colores cambian.
 
 ## Mostrando niveles de significación e intervalos de confianza
 
@@ -201,7 +201,7 @@ test <- cor.mtest(corSB, conf.level = 0.95)
 corrplot(corSB, p.mat = test$p, sig.level = 0.10, order = "hclust", addrect = 2)
 ```
 
-Una opción interesante es dejar en blanco las entradas para las que falla el test, y añadimos los coeficientes para los que sí:
+Una opción interesante es dejar en blanco las entradas para las que falla el test, y añadimos los coeficientes para los que sí se acepta`:
 
 ```{r, w = 7, h = 7}
 corrplot(
@@ -231,9 +231,10 @@ library(visreg)
 ```
 
 Antes de analizar, observamos los datos en función del tiempo.
-```{r}
+```{r, w=7, h=7}
 plot(SB)
 ```
+
 Podemos ajustar un modelo lineal que permita describir el número de conductores fallecidos en función del número de conductores con la función `lm`:
 
 ```{r}
@@ -304,7 +305,7 @@ visreg(fitpoly, xvar = "drivers", by = "law", overlay = TRUE)
 ```
 
 
-En modelos más complicados se pueden hacer gráficas de contour:
+En modelos más complicados se pueden hacer gráficas de contorno o contour:
 
 ```{r, w = 7, h = 5}
 visreg2d(fitpoly, "kms", "drivers")
