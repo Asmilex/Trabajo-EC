@@ -235,44 +235,44 @@ En el gráfico anterior podemos observar la relación estimada del modelo descri
 
 También podemos hacer diagramas con varias variables explicativas, como por ejemplo podemos visualizar el modelo que describe cuántos conductores han fallecido en función del número total de conductores en un cierto año y la distancia recorrida:
 
-```{r, w = 7, h = 7}
+```{r, w = 7, h = 4}
 fit1 <- lm(DriversKilled ~ drivers + kms, data = SB)
 visreg(fit1, xvar = "drivers")
 ```
 
 En particular, observamos cierta correlación:
 
-```{r, w = 7, h = 7}
+```{r, w = 7, h = 4}
 fitVan <- lm(DriversKilled ~ kms + VanKilled, data = SB)
 visreg(fitVan, xvar = "VanKilled")
 ```
 
 Pero incluyendo en el modelo el número de conductores:
-```{r, w = 7, h = 7}
+```{r, w = 7, h = 4}
 fitVan <- lm(DriversKilled ~ drivers + kms + VanKilled, data = SB)
 visreg(fitVan, xvar = "VanKilled")
 ```
 
 También podemos dividir las gráficas según los valores de un factor:
 
-```{r, w = 7, h = 7}
+```{r, w = 7, h = 4}
 fitlaw <- lm(DriversKilled ~ drivers + kms + law, data = SB)
 visreg(fitlaw, xvar = "drivers", by = "law")
 ```
 
 En realidad, puede ser cualquier variable. Si es continua, se puede indicar cómo se dividen por el argumento `breaks`.
-```{r, w = 7, h = 7}
+```{r, w = 7, h = 5}
 visreg(fitlaw, xvar = "drivers", by = "kms", breaks = 4)
 ```
 
 Otra opción interesante es superponer los gráficos anteriores en una sola gráfica:
 
-```{r, w = 7, h = 7}
+```{r, w = 7, h = 4}
 visreg(fitlaw, xvar = "drivers", by = "law", overlay = TRUE)
 ```
 
 También funciona para ajustes no lineales:
-```{r, w = 7, h = 7}
+```{r, w = 7, h = 4}
 fitpoly <- lm(DriversKilled ~ poly(kms, 2) * poly(drivers, 2) + law, data = SB)
 visreg(fitpoly, xvar = "drivers", by = "law", overlay = TRUE)
 ```
@@ -280,8 +280,14 @@ visreg(fitpoly, xvar = "drivers", by = "law", overlay = TRUE)
 
 En modelos más complicados se pueden hacer gráficas de contour:
 
-```{r, w = 7, h = 7}
+```{r, w = 7, h = 5}
 visreg2d(fitpoly, "kms", "drivers")
+```
+
+```{r, w = 7, h = 4}
 visreg2d(fitpoly, "kms", "drivers", plot.type = "gg")
+```
+
+```{r, w = 7, h = 5}
 visreg2d(fitpoly, "kms", "drivers", plot.type = "persp")
 ```
