@@ -218,7 +218,11 @@ Para ello, primero necesitamos instalar y cargar dicho paquete con las siguiente
 library(visreg)
 ```
 
-Podemos ajustar un modelo lineal que permita describir el número de conductores fallecidos en función del número de conductores en un cierto año con la función `lm`:
+Antes de analizar, observamos los datos en función del tiempo.
+```{r}
+plot(SB)
+```
+Podemos ajustar un modelo lineal que permita describir el número de conductores fallecidos en función del número de conductores con la función `lm`:
 
 ```{r}
 fit <- lm(DriversKilled ~ drivers, data = SB)
@@ -251,6 +255,14 @@ Pero incluyendo en el modelo el número de conductores:
 fitVan <- lm(DriversKilled ~ drivers + kms + VanKilled, data = SB)
 visreg(fitVan, xvar = "VanKilled")
 ```
+
+Otra observación curiosa es que, en todo el conjunto de datos, el número de conductores y de kilómetros recorridos no están positivamente correlacionados:
+```{r}
+fitdriversporkms <- lm(drivers ~ kms, data = SB)
+visreg(fitdriversporkms)
+```
+
+Esto se debe a que los datos corresponden a una serie temporal, y por tanto el análisis no corresponde a una relación mes a mes.
 
 También podemos dividir las gráficas según los valores de un factor:
 
