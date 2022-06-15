@@ -48,7 +48,7 @@ El análisis de correlaciones puede llevarse a cabo de forma teórica o visual. 
 
 Para ello, primero necesitamos instalar los paquetes necesarios para el análisis de las correlaciones. El paquete `corrplot` puede instalarse de la siguiente manera:
 
-```{r}
+```{r, warning=FALSE}
 # install.packages("corrplot")
 library(corrplot)
 ```
@@ -213,7 +213,7 @@ En esta sección realizaremos la construcción de un modelo de regresión y, usa
 
 Para ello, primero necesitamos instalar y cargar dicho paquete con las siguientes órdenes:
 
-```{r}
+```{r, warning=FALSE}
 # install.packages("visreg")
 library(visreg)
 ```
