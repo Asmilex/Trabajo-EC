@@ -33,7 +33,7 @@ https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/UKDriverDeaths.html
 - **drivers**: conductores en un cierto año.
 - **front**: número de copilotos fallecidos o gravemente heridos.
 - **rear**: número de pasajeros en los asientos traseros fallecidos o gravemente heridos.
-- **kms**: distancia recorrida.
+- **kms**: distancia recorrida en total por todos los conductores.
 - **PetrolPrice**: precio del petróleo.
 - **VanKilled**: número de conductores de furgonetas fallecidos.
 - **law**: si estaba en efecto la ley de tránsito en ese mes.
@@ -126,7 +126,7 @@ La diagonal principal de la matriz de correlaciones expresa la correlación de u
 corrplot(corSB, method = "square", order = "alphabet", diag = FALSE)
 ```
 
-Además, tenemos que la matriz de correlación es simétrica. Por ello podemos mostrar solo la matriz triangular superior o inferior.
+Como la matriz de correlaciones es simétrica, podemos mostrar únicamente una o la triangular superior o la inferior.
 
 ```{r, w = 7, h = 7}
 corrplot(corSB, method = "square", order = "FPC", type = "lower", diag = FALSE)
@@ -155,12 +155,15 @@ corrplot(corSB, order = "hclust", addrect = 2)
 ```
 
 ```{r, h = 7, w = 7}
-corrplot(corSB, method = "square", diag = FALSE, order = "hclust", addrect = 3, rect.col = "blue", rect.lwd = 3, tl.pos = "d")
+corrplot(
+    corSB, method = "square", diag = FALSE, order = "hclust",
+    addrect = 3, rect.col = "blue", rect.lwd = 3, tl.pos = "d"
+)
 ```
 
 ## Personalizando los colores
 
-Podemos modificar los colores que se usan en las gráficas que vienen por defecto. Esto se puede hacer con el argumento `col`, al que le pasaremos los colores que queremos usar. Por ejemplo, podemos usar colores secuenciales, tales como `YlGn`, `OrRd`, `YlOrRd`, `YlOrBr`, `Blues`, `Reds`, `Greens`, `Purples`, etc; o colores divergentes, tales como `RdBu`, `BrBG`, `PiYG`, `PRGn`, `PuOr` o `RdYlBu`. Para los colores secuenciales necesitamos obtenerlos de la función `COL1`, mientras que los colores divergentes los conseguimos con `COL2`.
+Podemos modificar los colores que se usan en las gráficas que vienen por defecto. Esto se puede hacer con el argumento `col`, al que le pasaremos los colores que queremos usar. Por ejemplo, podemos usar colores secuenciales, tales como `YlGn`, `OrRd`, `YlOrRd`, `YlOrBr`, `Blues`, `Reds`, `Greens`, `Purples`, etc; o colores divergentes, tales como `RdBu`, `BrBG`, `PiYG`, `PRGn`, `PuOr` o `RdYlBu`. Los colores generados pueden ser obtenidos mediante las funciones `COL1` o `COL2`. El primero se encarga de interpolar entre los dos extremos, mientras que el segundo genera paletas divergentes.
 
 En la siguiente ejecución se muestra el gráfico de las correlaciones entre las variables usando tonos morados:
 
@@ -168,7 +171,7 @@ En la siguiente ejecución se muestra el gráfico de las correlaciones entre las
 corrplot(corSB, col = COL1("Purples"))
 ```
 
-Si queremos que el gráfico tenga colores entre el tono marrón y el tono verde, ejecutamos lo siguiente:
+Si queremos que el gráfico tenga colores entre el tono naranja y el tono verde, ejecutamos lo siguiente:
 
 ```{r, h = 7, w = 7}
 corrplot(corSB, col = COL2("BrBG"))
@@ -176,40 +179,49 @@ corrplot(corSB, col = COL2("BrBG"))
 
 También podemos cambiar el color del fondo con el argumento `bg`.
 
-## Visualizar una matriz distinta a la matriz de correlación
+## Visualizar una matriz distinta a la de correlación
 
 Podemos visualizar una matriz que no es de correlaciones estableciendo el argumento `is.corr` como `FALSE`:
 
 ```{r, h = 7, w = 7}
-corrplot(corSB, is.corr = FALSE)
+corrplot(
+    matrix(runif(16, min = -10, max = 10), 4, 4),
+    is.corr = FALSE
+)
 ```
 
 Observemos que los límites del rango de colores cambia.
 
 ## Mostrando niveles de significación e intervalos de confianza
 
-Nivel de confianza $\alpha = 0.95$:
+La función `corrplot()` puede visualizar los p-valores y el intervalo de confianza de la matriz de correlaciones. Por ejemplo, para un nivel de confianza $\alpha = 0.95$:
 
 ```{r, w = 7, h = 7}
 test <- cor.mtest(corSB, conf.level = 0.95)
 corrplot(corSB, p.mat = test$p, sig.level = 0.10, order = "hclust", addrect = 2)
 ```
 
-Dejamos en blanco para los que no tengan significación, y añadimos los coeficientes para los que sí:
+Una opción interesante es dejar en blanco las entradas para las que falla el test, y añadimos los coeficientes para los que sí:
 
 ```{r, w = 7, h = 7}
-corrplot(corSB, p.mat = test$p, method = "circle", type = "lower", insig = "blank", addCoef.col = "black", number.cex = 0.8, order = "AOE", diag = FALSE)
+corrplot(
+    corSB, p.mat = test$p, method = "circle", type = "lower", insig = "blank",
+    addCoef.col = "black", number.cex = 0.8, order = "AOE", diag = FALSE
+)
 ```
 
 Se pueden visualizar los intervalos de confianza explícitamente de la siguiente manera:
 
 ```{r, w = 7, h = 7}
-corrplot(corSB, lowCI = test$lowCI, uppCI = test$uppCI, order = "hclust", tl.pos = "d", rect.col = "navy", plotC = "rect", cl.pos = "n")
+corrplot(
+    corSB, lowCI = test$lowCI, uppCI = test$uppCI, order = "hclust",
+    tl.pos = "d", rect.col = "navy", plotC = "rect", cl.pos = "n"
+)
 ```
 
 # Visualización de un modelo de regresión (visreg)
 
-En esta sección realizaremos la construcción de un modelo de regresión y, usando el paquete `visreg`, podremos visualizar el ajuste de dicho modelo. Esto es, este paquete permite resolver el problema de saber cuánta relación existe entre algunas variables de un conjunto de datos.
+En esta sección realizaremos la construcción de un modelo de regresión y, usando el paquete `visreg`, visualizaremos el ajuste de dicho modelo. Este paquete permite resolver el problema de saber cuánta relación existe entre algunas variables de un conjunto de datos.
 
 Para ello, primero necesitamos instalar y cargar dicho paquete con las siguientes órdenes:
 
@@ -230,7 +242,7 @@ Con la función `visreg()` podemos visualizar el modelo:
 visreg(fit)
 ```
 
-En el gráfico anterior podemos observar la relación estimada del modelo descrito anteriormente, una banda de confianza sobre esa estimación.
+En el gráfico anterior observamos la relación lineada estimada por el modelo y una banda de confianza sobre esa estimación.
 
 También podemos hacer diagramas con varias variables explicativas, como por ejemplo podemos visualizar el modelo que describe cuántos conductores han fallecido en función del número total de conductores y la distancia recorrida:
 
