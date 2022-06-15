@@ -255,26 +255,28 @@ fit1 <- lm(DriversKilled ~ drivers + kms, data = SB)
 visreg(fit1, xvar = "drivers")
 ```
 
-En particular, observamos cierta correlación:
+En particular, observamos cierta correlación entre la distancia total, el número de conductores de camiones fallecidos y el de vehículos fallecidos:
 
 ```{r, w = 7, h = 4}
 fitVan <- lm(DriversKilled ~ kms + VanKilled, data = SB)
 visreg(fitVan, xvar = "VanKilled")
 ```
 
-Pero incluyendo en el modelo el número de conductores:
+Incluyendo en el modelo el número de conductores, obtenemos
+
 ```{r, w = 7, h = 4}
 fitVan <- lm(DriversKilled ~ drivers + kms + VanKilled, data = SB)
 visreg(fitVan, xvar = "VanKilled")
 ```
 
 Otra observación curiosa es que, en todo el conjunto de datos, el número de conductores y de kilómetros recorridos no están positivamente correlacionados:
+
 ```{r, w = 7, h = 4}
 fitdriversporkms <- lm(drivers ~ kms, data = SB)
 visreg(fitdriversporkms)
 ```
 
-Esto se debe a que los datos corresponden a una serie temporal, y por tanto el análisis no corresponde a una relación mes a mes.
+Esto se debe a que los datos corresponden a una serie temporal estacional, y por tanto, un análisis basado en regresión lineal no tiene mucho sentido.
 
 También podemos dividir las gráficas según los valores de un factor:
 
@@ -284,6 +286,7 @@ visreg(fitlaw, xvar = "drivers", by = "law")
 ```
 
 En realidad, puede ser cualquier variable. Si es continua, se puede indicar cómo se dividen por el argumento `breaks`.
+
 ```{r, w = 7, h = 5}
 visreg(fitlaw, xvar = "drivers", by = "kms", breaks = 4)
 ```
