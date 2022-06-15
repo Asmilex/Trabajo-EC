@@ -15,15 +15,12 @@ vignette: >
     %\VignetteEncoding{UTF-8}
 ---
 
-```{r purl=FALSE, echo=FALSE, results=FALSE, message=FALSE, fig.show='hide', warning=FALSE, eval=FALSE}
-
+```{r setup, include=FALSE}
 knitr::opts_knit$set(
     aliases = c(h = "fig.height", w = "fig.width"),
     fig.align = "center",
     dpi = 200
 )
-
-rmarkdown::render("./movidas_guapardas.rmd", "html_vignette")
 ```
 
 En este trabajo estudiaremos de forma visual el conjunto de datos `Seatbelts`, el cual recoge la información los accidentes de tráfico mortales en Gran Bretaña comprendidos entre los años 1969 y 1984. La ley relacionada con la obligatoriedad de los cinturones se introdujo el 31 de enero de 1983. Las variables de este conjunto de datos son:
