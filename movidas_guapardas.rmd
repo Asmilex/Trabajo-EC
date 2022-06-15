@@ -269,7 +269,7 @@ visreg(fitVan, xvar = "VanKilled")
 ```
 
 Otra observación curiosa es que, en todo el conjunto de datos, el número de conductores y de kilómetros recorridos no están positivamente correlacionados:
-```{r}
+```{r, w = 7, h = 4}
 fitdriversporkms <- lm(drivers ~ kms, data = SB)
 visreg(fitdriversporkms)
 ```
