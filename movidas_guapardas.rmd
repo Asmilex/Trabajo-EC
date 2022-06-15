@@ -230,9 +230,9 @@ Con la función `visreg()` podemos visualizar el modelo:
 visreg(fit)
 ```
 
-En el gráfico anterior podemos observar la relación estimada del modelo descrito anteriormente, una banda de confianza sobre esa estimación y los residuos.
+En el gráfico anterior podemos observar la relación estimada del modelo descrito anteriormente, una banda de confianza sobre esa estimación.
 
-También podemos hacer diagramas con varias variables explicativas, como por ejemplo podemos visualizar el modelo que describe cuántos conductores han fallecido en función del número total de conductores en un cierto año y la distancia recorrida:
+También podemos hacer diagramas con varias variables explicativas, como por ejemplo podemos visualizar el modelo que describe cuántos conductores han fallecido en función del número total de conductores y la distancia recorrida:
 
 ```{r, w = 7, h = 4}
 fit1 <- lm(DriversKilled ~ drivers + kms, data = SB)
