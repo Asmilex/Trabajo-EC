@@ -247,7 +247,7 @@ Con la función `visreg()` podemos visualizar el modelo:
 visreg(fit)
 ```
 
-En el gráfico anterior observamos la relación lineada estimada por el modelo y una banda de confianza sobre esa estimación.
+En el gráfico anterior observamos la relación lineal estimada por el modelo y una banda de confianza sobre esa estimación.
 
 También podemos hacer diagramas con varias variables explicativas, como por ejemplo podemos visualizar el modelo que describe cuántos conductores han fallecido en función del número total de conductores y la distancia recorrida:
 
@@ -263,7 +263,7 @@ fitVan <- lm(DriversKilled ~ kms + VanKilled, data = SB)
 visreg(fitVan, xvar = "VanKilled")
 ```
 
-Incluyendo en el modelo el número de conductores, obtenemos
+Incluyendo en el modelo el número de conductores, obtenemos:
 
 ```{r, w = 7, h = 4}
 fitVan <- lm(DriversKilled ~ drivers + kms + VanKilled, data = SB)
